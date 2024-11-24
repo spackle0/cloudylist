@@ -1,0 +1,2 @@
+# cloudylist
+AWS Inventory Generator
