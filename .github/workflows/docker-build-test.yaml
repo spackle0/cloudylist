@@ -42,10 +42,6 @@ jobs:
       - name: Run unit tests with coverage
         run: |
           docker run --rm ghcr.io/${{ github.repository }}/cloudylist-test:latest
-          docker run --rm \
-            --entrypoint "" \
-            ghcr.io/${{ github.repository }}/cloudylist-test:latest \
-            poetry run coverage html
 
       - name: Build and push production image
         run: |
