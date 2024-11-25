@@ -21,7 +21,7 @@ disable = [
 max-line-length=120
 
 [tool.pytest.ini_options]
-addopts="-ra --tb=short -v --setup-show"
+addopts="-ra --tb=short "
 # These are clutter
 filterwarnings = [
     "ignore:datetime.datetime.utcnow:DeprecationWarning",
