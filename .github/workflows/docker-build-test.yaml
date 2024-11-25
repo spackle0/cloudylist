@@ -31,24 +31,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build test image
+      - name: Build and push test image
         run: |
           docker buildx build --target testing \
             --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest \
             --cache-to=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest,mode=max \
-            -t ghcr.io/${{ github.repository }}/cloudylist-test:latest .
+            -t ghcr.io/${{ github.repository }}/cloudylist-test:latest \
+            --push .
 
       - name: Run unit tests
         run: |
           docker run --rm ghcr.io/${{ github.repository }}/cloudylist-test:latest
 
-      - name: Build production image
+      - name: Build and push production image
         run: |
           docker buildx build --target production \
             --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest \
             --cache-to=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest,mode=max \
-            -t ghcr.io/${{ github.repository }}/cloudylist:latest .
-
-      - name: Push production image
-        run: |
-          docker push ghcr.io/${{ github.repository }}/cloudylist:latest
+            -t ghcr.io/${{ github.repository }}/cloudylist:latest \
+            --push .
