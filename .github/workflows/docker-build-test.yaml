@@ -31,19 +31,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Build test image
         run: |
-          docker build --target testing \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+          docker buildx build --target testing \
+            --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest \
+            --cache-to=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest,mode=max \
             -t ghcr.io/${{ github.repository }}/cloudylist-test:latest .
 
       - name: Run unit tests
@@ -52,9 +44,9 @@ jobs:
 
       - name: Build production image
         run: |
-          docker build --target production \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+          docker buildx build --target production \
+            --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest \
+            --cache-to=type=registry,ref=ghcr.io/${{ github.repository }}/cloudylist-cache:latest,mode=max \
             -t ghcr.io/${{ github.repository }}/cloudylist:latest .
 
       - name: Push production image
