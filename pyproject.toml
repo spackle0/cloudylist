@@ -19,9 +19,15 @@ disable = [
 
 [tool.pytest]
 addopts="-ra --tb=short -v --capture=no --setup-show"
-
 [tool.flake8]
 max-line-length=120
+
+[tool.pytest.ini_options]
+# These are clutter
+filterwarnings = [
+    "ignore:datetime.datetime.utcnow:DeprecationWarning",
+    "ignore:datetime.datetime.now:DeprecationWarning"
+]
 
 [tool.bumpversion]
 current_version = "0.1.0"
@@ -37,7 +43,6 @@ filename = "README.md"
 
 [[tool.bumpversion.files]]
 filename = "Makefile"
-
 
 [tool.ruff]
 show-fixes = true
@@ -82,6 +87,8 @@ convention = "google"
 python = "^3.12"
 boto3 = "^1.35.68"
 typer = "^0.13.1"
+stevedore = "^5.4.0"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
@@ -91,7 +98,18 @@ bandit = "^1.7.10"
 pyt = "^1.0.5"
 bump-my-version = "^0.28.1"
 pylint = "^3.3.1"
+flake8 = "^7.1.1"
+moto = "^5.0.21"
+pytest-mock = "^3.14.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+cloudylist = "cloudylist.main:app"
+
+[tool.poetry.plugins."resources"]
+ec2 = "cloudylist.resources.ec2:list_resources"
+s3 = "cloudylist.resources.s3:list_resources"
+rds = "cloudylist.resources.rds:list_resources"

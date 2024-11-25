@@ -15,12 +15,34 @@ tasks:
       - echo "========================================"
     silent: true
 
-  run:
-    desc: "Run the Django development server"
+  install:
+    desc: Install dependencies using Poetry
     cmds:
-      - poetry run python main.py
-    deps:
-      - info
+      - poetry install
+
+  test:
+    desc: Run unit tests
+    cmds:
+      - poetry run pytest tests/
+        #- poetry run coverage report --fail-under={{.MIN_COVERAGE}}
+
+  docker-tests:
+    desc: Run unit tests inside the testing Docker container
+    depends_on:
+      - build-test
+    cmds:
+      - docker run cloudylist:test
+        # - docker run cloudylist:test poetry run coverage report --fail-under={{.MIN_COVERAGE}}
+
+  build:
+    desc: Build the production Docker image
+    cmds:
+      - docker build --target production -t cloudylist:latest .
+
+  build-test:
+    desc: Build the testing Docker image
+    cmds:
+      - docker build --target testing -t cloudylist:test .
 
   lint:
     desc: "Run linters"
@@ -28,15 +50,23 @@ tasks:
       - poetry run ruff check
 
   fmt:
-    desc: "Format code"
+    desc: "Format code using Black"
     cmds:
       - poetry run ruff format
-      # Uncomment the lines below if you want to use isort or black
-      # - poetry run isort --skip migrations {{.APP_NAME}}
-      # - poetry run black --exclude="migrations/" {{.APP_NAME}}
 
   sec:
     desc: "Run security checks"
     cmds:
       - poetry run bandit ./{{.PROJECT_NAME}}
       - poetry run pyt -a D ./{{.PROJECT_NAME}}
+
+  show-inventory-table:
+    desc: "Show the inventory of the project as a table"
+    cmds:
+      - poetry run cloudylist show-inventory --format table
+
+  show-inventory-json:
+    desc: "Show the inventory of the project as JSON"
+    cmds:
+      - poetry run cloudylist show-inventory --format json
+
