@@ -52,14 +52,16 @@ jobs:
             -e COVERAGE=${{ env.COVERAGE }} \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest
 
-      - name: Generate and upload coverage report
-        if: always()
+      - name: Generate coverage report
         run: |
           docker run --rm \
             -e COVERAGE=term-missing \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest \
             --cov-report=html
           tar -czf coverage-html.tar.gz htmlcov
+
+      - name: Upload coverage report
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
