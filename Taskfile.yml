@@ -23,7 +23,7 @@ tasks:
   test:
     desc: Run unit tests
     cmds:
-      - poetry run pytest tests --cov=cloudylist --cov-report=term
+      - poetry run pytest tests --cov=cloudylist --cov-report=term-missing --cov-fail-under={{.MIN_COVERAGE}}
 
   docker-tests:
     desc: Run unit tests inside the testing Docker container

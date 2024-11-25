@@ -17,12 +17,11 @@ disable = [
     "E0401", # Disable import errors
 ]
 
-[tool.pytest]
-addopts="-ra --tb=short -v --capture=no --setup-show"
 [tool.flake8]
 max-line-length=120
 
 [tool.pytest.ini_options]
+addopts="-ra --tb=short -v --capture=tee-sys --setup-show"
 # These are clutter
 filterwarnings = [
     "ignore:datetime.datetime.utcnow:DeprecationWarning",

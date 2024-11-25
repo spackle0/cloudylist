@@ -3,42 +3,11 @@ import json
 import yaml
 from rich.console import Console
 from rich.table import Table
-from cloudylist.utils import load_config, assume_role, get_boto3_client
+from cloudylist.utils import collect_inventory, load_config
 from stevedore import ExtensionManager
 
 app = typer.Typer()
 console = Console()
-
-
-# Collect inventory across accounts and regions
-def collect_inventory(config, plugins):
-    inventory = []
-    for account in config["accounts"]:
-        try:
-            print(f"Assuming role for account: {account['account_id']}")
-            credentials = assume_role(account["account_id"], account["role_name"])
-        except Exception as e:
-            print(f"Error assuming role for account {account['account_id']}: {e}")
-            continue
-
-        for region in config["regions"]:
-            for plugin_name in plugins.names():
-                try:
-                    print(f"Querying plugin: {plugin_name} in region: {region}")
-                    plugin = plugins[plugin_name].plugin
-                    client = get_boto3_client(plugin_name, credentials, region)
-                    resources = plugin(client)
-                    inventory.append({
-                        "account": account["account_id"],
-                        "region": region,
-                        "service": plugin_name,
-                        "resources": resources,
-                    })
-                except Exception as e:
-                    print(f"Error querying {plugin_name} in {region} for account {account['account_id']}: {e}")
-    return inventory
-
-
 
 def output_table(data):
     table = Table(title="AWS Multi-Account Inventory")
@@ -51,15 +20,12 @@ def output_table(data):
         table.add_row(item["account"], item["region"], item["service"], resources_summary)
     console.print(table)
 
-
 def output_json(data):
     console.print_json(data=json.dumps(data, indent=4))
-
 
 def output_yaml(data):
     yaml_output = yaml.dump(data, default_flow_style=False, sort_keys=False)
     console.print(yaml_output)
-
 
 @app.command()
 def show_inventory(
