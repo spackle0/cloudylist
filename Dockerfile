@@ -37,7 +37,7 @@ RUN poetry install --with dev --no-interaction
 ENV COVERAGE=75
 
 # Entry point for running tests with dynamic coverage thresholds
-ENTRYPOINT ["sh", "-c", "poetry run pytest --tb=short --capture=no --cov=cloudylist --cov-report=term-missing --cov-fail-under=${COVERAGE} tests"]
+ENTRYPOINT ["sh", "-c", "poetry run pytest --cov=cloudylist --cov-report=term-missing --cov-fail-under=${COVERAGE} tests"]
 
 ##########
 # Production image, lean

@@ -23,14 +23,7 @@ tasks:
   test:
     desc: Run unit tests
     cmds:
-      - poetry run pytest tests -s --cov=cloudylist --cov-report=term-missing --cov-fail-under={{.MIN_COVERAGE}}
-
-  docker-tests:
-    desc: Run unit tests inside the testing Docker container
-    depends_on:
-      - build-test
-    cmds:
-      - docker run --rm cloudylist:test
+      - poetry run pytest tests -v --cov=cloudylist --cov-report=term-missing --cov-fail-under={{.MIN_COVERAGE}}
 
   build:
     desc: Build the production Docker image
@@ -41,6 +34,15 @@ tasks:
     desc: Build the testing Docker image
     cmds:
       - docker build --target testing -t cloudylist:test .
+
+  docker-tests:
+    desc: Run unit tests inside the testing Docker container
+    depends_on:
+      - build-test
+    cmds:
+      - docker run --rm cloudylist:test
+
+
 
   lint:
     desc: "Run linters"
