@@ -34,7 +34,7 @@ COPY .coveragerc ./
 RUN poetry install --with dev --no-interaction
 
 # Default COVERAGE value for local testing
-ENV COVERAGE=75
+ENV COVERAGE=85
 
 # Entry point for running tests with dynamic coverage thresholds
 ENTRYPOINT ["sh", "-c", "poetry run pytest --cov=cloudylist --cov-report=term-missing --cov-fail-under=${COVERAGE} tests"]

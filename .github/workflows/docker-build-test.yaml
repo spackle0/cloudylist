@@ -46,7 +46,7 @@ jobs:
 
       - name: Run tests with coverage
         env:
-          COVERAGE: 80
+          COVERAGE: 85
         run: |
           echo "COVERAGE=${{ env.COVERAGE }}"
           docker run --rm \
