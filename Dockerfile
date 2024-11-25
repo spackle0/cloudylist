@@ -33,8 +33,11 @@ COPY .coveragerc ./
 # Install additional development dependencies
 RUN poetry install --with dev --no-interaction
 
+ENV COVERAGE=75
+
 # Entry point for running tests
-ENTRYPOINT ["poetry", "run", "pytest", "--tb=short", "--cov=cloudylist", "--cov-report=term-missing", "tests"]
+ENTRYPOINT ["sh", "-c", "poetry run pytest --tb=short --cov=cloudylist --cov-report=term-missing --cov-fail-under=${COVERAGE} tests"]
+
 
 ##########
 # Production image, lean

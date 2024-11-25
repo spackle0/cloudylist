@@ -3,7 +3,7 @@ version: '3'
 vars:
   APP_NAME: cloudylist
   VERSION: "0.1.0"
-  MIN_COVERAGE: 0
+  MIN_COVERAGE: 85
 
 tasks:
   info:
