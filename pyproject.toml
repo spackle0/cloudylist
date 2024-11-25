@@ -1,0 +1,97 @@
+[tool.poetry]
+name = "cloudylist"
+version = "0.1.0"
+description = "AWS Inventory List"
+authors = ["spackle0 <spackle0@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.pylint.basic]
+dostring-min-length=10
+
+[tool.pylint.design]
+exclude-too-few-public-methods=true
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "E0401", # Disable import errors
+]
+
+[tool.pytest]
+addopts="-ra --tb=short -v --capture=no --setup-show"
+
+[tool.flake8]
+max-line-length=120
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = false
+tag = false
+tag_name = "v{new_version}"
+tag_message = "Bump version: {current_version} → {new_version}"
+allow_dirty = true
+message = "Version updated from {current_version} to {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+
+[[tool.bumpversion.files]]
+filename = "Makefile"
+
+
+[tool.ruff]
+show-fixes = true
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "migrations",
+    "setup.py",
+    "manage.py"
+]
+line-length = 120
+
+[tool.ruff.format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+order-by-type = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+boto3 = "^1.35.68"
+typer = "^0.13.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pytest-coverage = "^0.0"
+ruff = "^0.8.0"
+bandit = "^1.7.10"
+pyt = "^1.0.5"
+bump-my-version = "^0.28.1"
+pylint = "^3.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

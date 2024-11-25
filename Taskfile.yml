@@ -1,0 +1,42 @@
+version: '3'
+
+vars:
+  APP_NAME: cloudylist
+  VERSION: "0.1.0"
+  MIN_COVERAGE: 0
+
+tasks:
+  info:
+    cmds:
+      - echo "========================================"
+      - echo "App Name={{.APP_NAME}}"
+      - echo "Version={{.VERSION}}"
+      - echo "Min Test Coverage={{.MIN_COVERAGE}}"
+      - echo "========================================"
+    silent: true
+
+  run:
+    desc: "Run the Django development server"
+    cmds:
+      - poetry run python main.py
+    deps:
+      - info
+
+  lint:
+    desc: "Run linters"
+    cmds:
+      - poetry run ruff check
+
+  fmt:
+    desc: "Format code"
+    cmds:
+      - poetry run ruff format
+      # Uncomment the lines below if you want to use isort or black
+      # - poetry run isort --skip migrations {{.APP_NAME}}
+      # - poetry run black --exclude="migrations/" {{.APP_NAME}}
+
+  sec:
+    desc: "Run security checks"
+    cmds:
+      - poetry run bandit ./{{.PROJECT_NAME}}
+      - poetry run pyt -a D ./{{.PROJECT_NAME}}
