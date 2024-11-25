@@ -56,9 +56,9 @@ jobs:
       - name: Generate coverage report
         run: |
           docker run --rm \
-            -e COVERAGE=term-missing \
+            --entrypoint "" \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest \
-            --cov-report=html
+            sh -c "poetry run pytest --tb=short --cov=cloudylist --cov-report=html tests"
           tar -czf coverage-html.tar.gz htmlcov
 
       - name: Upload coverage report
@@ -67,3 +67,4 @@ jobs:
         with:
           name: coverage-report
           path: coverage-html.tar.gz
+
