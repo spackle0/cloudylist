@@ -23,16 +23,14 @@ tasks:
   test:
     desc: Run unit tests
     cmds:
-      - poetry run pytest tests/
-        #- poetry run coverage report --fail-under={{.MIN_COVERAGE}}
+      - poetry run pytest tests --cov=cloudylist --cov-report=term
 
   docker-tests:
     desc: Run unit tests inside the testing Docker container
     depends_on:
       - build-test
     cmds:
-      - docker run cloudylist:test
-        # - docker run cloudylist:test poetry run coverage report --fail-under={{.MIN_COVERAGE}}
+      - docker run --rm cloudylist:test
 
   build:
     desc: Build the production Docker image

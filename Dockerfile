@@ -28,12 +28,13 @@ FROM base AS testing
 
 # Add tests to the image
 COPY tests ./tests
+COPY .coveragerc ./
 
 # Install additional development dependencies
 RUN poetry install --with dev --no-interaction
 
 # Entry point for running tests
-ENTRYPOINT ["poetry", "run", "pytest"]
+ENTRYPOINT ["poetry", "run", "pytest", "--tb=short", "--cov=cloudylist", "--cov-report=term-missing", "tests"]
 
 ##########
 # Production image, lean
