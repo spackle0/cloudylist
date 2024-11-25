@@ -5,6 +5,7 @@ description = "AWS Inventory List"
 authors = ["spackle0 <spackle0@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.pylint.basic]
 dostring-min-length=10
