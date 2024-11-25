@@ -49,7 +49,7 @@ jobs:
           COVERAGE: 80
         run: |
           docker run --rm \
-            -e COVERAGE=${{ env.COVERAGE }} \
+            -e COVERAGE=${{ env.COVERAGE | int }} \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest
 
       - name: Generate coverage report
