@@ -111,15 +111,30 @@ def test_collect_inventory_success():
     assert inventory[0]["service"] == "ec2"
     assert inventory[0]["resources"] == [{"id": "resource-1"}]
 
-def test_assume_role_exception(mocker):
-    """Test exception handling in assume_role."""
-    mocker.patch("cloudylist.utils.boto3.client", side_effect=Exception("Simulated error"))
-    config = {
-        "accounts": [{"account_id": "123456789012", "role_name": "TestRole"}],
-        "regions": ["us-east-1"],
-    }
-    plugins = mocker.Mock(names=lambda: ["ec2"])
+def test_assume_role_logger_on_client_error(mocker):
+    """Test that logger.error is called when assume_role raises ClientError."""
+    from botocore.exceptions import ClientError
 
-    inventory = collect_inventory(config, plugins)
+    # Mock boto3 STS client
+    mock_sts_client = mocker.patch("cloudylist.utils.boto3.client")
+    mock_sts_client.return_value.assume_role.side_effect = ClientError(
+        error_response={"Error": {"Code": "AccessDenied", "Message": "Access denied"}},
+        operation_name="AssumeRole",
+    )
 
-    assert inventory == []  # No inventory should be collected
+    # Mock logger
+    mock_logger = mocker.patch("cloudylist.utils.logger.error")
+
+    # Test assume_role
+    account_id = "123456789012"
+    role_name = "TestRole"
+    try:
+        assume_role(account_id, role_name)
+    except ClientError:
+        pass
+
+    # Assert logger.error was called
+    role_arn = f"arn:aws:iam::{account_id}:role/{role_name}"
+    mock_logger.assert_called_once_with(
+        f"Failed to assume role {role_arn}: An error occurred (AccessDenied) when calling the AssumeRole operation: Access denied"
+    )
