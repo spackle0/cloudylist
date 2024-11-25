@@ -54,11 +54,14 @@ jobs:
             ghcr.io/${{ github.repository }}/cloudylist-test:latest
 
       - name: Generate coverage report
+        if: success()
         run: |
-          docker run --rm \
-            --entrypoint "" \
+          container_id=$(docker run -d --entrypoint "" \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest \
-            sh -c "poetry run pytest --tb=short --cov=cloudylist --cov-report=html tests"
+            sh -c "poetry run pytest --tb=short --cov=cloudylist --cov-report=html tests")
+          docker wait $container_id
+          docker cp $container_id:/app/coverage_html_report ./coverage_html_report
+          docker rm $container_id
           tar -czf coverage-html.tar.gz coverage_html_report
 
       - name: Upload coverage report
