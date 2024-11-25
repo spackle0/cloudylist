@@ -19,6 +19,7 @@ RUN poetry config virtualenvs.create false \
 
 # Copy application code
 COPY cloudylist ./cloudylist
+COPY config.yml ./
 
 ##########
 # Testing image with development dependencies
