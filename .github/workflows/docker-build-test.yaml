@@ -48,6 +48,7 @@ jobs:
         env:
           COVERAGE: 80
         run: |
+          echo "COVERAGE=${{ env.COVERAGE }}"
           docker run --rm \
             -e COVERAGE=${{ env.COVERAGE }} \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest

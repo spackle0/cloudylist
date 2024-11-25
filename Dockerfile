@@ -15,7 +15,7 @@ COPY pyproject.toml poetry.lock ./
 
 # Install project dependencies
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction # --no-ansi # maybe colors in github actions output
+    && poetry install --no-interaction
 
 # Copy application code
 COPY cloudylist ./cloudylist
@@ -26,18 +26,18 @@ COPY config.yml ./
 ##########
 FROM base AS testing
 
-# Add tests to the image
+# Add tests and coverage configuration
 COPY tests ./tests
 COPY .coveragerc ./
 
 # Install additional development dependencies
 RUN poetry install --with dev --no-interaction
 
+# Default COVERAGE value for local testing
 ENV COVERAGE=75
 
-# Entry point for running tests
+# Entry point for running tests with dynamic coverage thresholds
 ENTRYPOINT ["sh", "-c", "poetry run pytest --tb=short --cov=cloudylist --cov-report=term-missing --cov-fail-under=${COVERAGE} tests"]
-
 
 ##########
 # Production image, lean
