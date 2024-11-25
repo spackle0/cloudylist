@@ -34,6 +34,7 @@ def test_assume_role(mocker):
     assert credentials["SecretAccessKey"] == "mock-secret-key"
     assert credentials["SessionToken"] == "mock-session-token"
 
+
 def test_get_logger():
     """Test logger initialization."""
     logger = get_logger("test_logger")
@@ -41,30 +42,28 @@ def test_get_logger():
     assert logger.level == logging.INFO
     assert len(logger.handlers) > 0
 
+
 def test_collect_inventory_plugin_error():
     """Test collect_inventory handles plugin errors."""
-    mock_config = {
-        "accounts": [{"account_id": "123456789012", "role_name": "TestRole"}],
-        "regions": ["us-east-1"]
-    }
+    mock_config = {"accounts": [{"account_id": "123456789012", "role_name": "TestRole"}], "regions": ["us-east-1"]}
 
     mock_plugins = MagicMock()
     mock_plugins.names.return_value = ["ec2"]
     mock_plugins["ec2"].plugin.side_effect = Exception("PluginError")
 
-    with patch("cloudylist.utils.assume_role", return_value={"AccessKeyId": "key"}), \
-         patch("cloudylist.utils.get_boto3_client"):
+    with (
+        patch("cloudylist.utils.assume_role", return_value={"AccessKeyId": "key"}),
+        patch("cloudylist.utils.get_boto3_client"),
+    ):
         inventory = collect_inventory(mock_config, mock_plugins)
 
     # Assert no inventory is collected due to plugin error
     assert len(inventory) == 0
 
+
 def test_collect_inventory_plugin_exception():
     """Test exception handling for plugins in collect_inventory."""
-    mock_config = {
-        "accounts": [{"account_id": "123456789012", "role_name": "TestRole"}],
-        "regions": ["us-east-1"]
-    }
+    mock_config = {"accounts": [{"account_id": "123456789012", "role_name": "TestRole"}], "regions": ["us-east-1"]}
 
     mock_plugins = MagicMock()
     mock_plugins.names.return_value = ["ec2"]
@@ -74,6 +73,7 @@ def test_collect_inventory_plugin_exception():
         inventory = collect_inventory(mock_config, mock_plugins)
         assert len(inventory) == 0  # No inventory should be collected due to plugin error
 
+
 def test_get_logger_initialization():
     """Test logger initialization and handler setup."""
     # Ensure the logger is initialized without handlers
@@ -82,23 +82,26 @@ def test_get_logger_initialization():
     assert test_logger.name == logger_name
     assert len(test_logger.handlers) > 0
 
+
 def test_collect_inventory_success():
     """Test that collect_inventory successfully appends to inventory."""
-    mock_config = {
-        "accounts": [{"account_id": "123456789012", "role_name": "TestRole"}],
-        "regions": ["us-east-1"]
-    }
+    mock_config = {"accounts": [{"account_id": "123456789012", "role_name": "TestRole"}], "regions": ["us-east-1"]}
 
     mock_plugins = MagicMock()
     mock_plugins.names.return_value = ["ec2"]
     mock_plugins["ec2"].plugin.return_value = [{"id": "resource-1"}]
 
-    with patch("cloudylist.utils.assume_role", return_value={
-        "AccessKeyId": "mock-access-key",
-        "SecretAccessKey": "mock-secret-key",
-        "SessionToken": "mock-session-token"
-    }), \
-    patch("cloudylist.utils.get_boto3_client"):
+    with (
+        patch(
+            "cloudylist.utils.assume_role",
+            return_value={
+                "AccessKeyId": "mock-access-key",
+                "SecretAccessKey": "mock-secret-key",
+                "SessionToken": "mock-session-token",
+            },
+        ),
+        patch("cloudylist.utils.get_boto3_client"),
+    ):
         inventory = collect_inventory(mock_config, mock_plugins)
 
     # Assert inventory is populated

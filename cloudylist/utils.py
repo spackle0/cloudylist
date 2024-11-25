@@ -4,16 +4,18 @@ import yaml
 from botocore.exceptions import ClientError
 from typing import List, Dict, Any
 
+
 # Configure logging
 def get_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
     return logger
+
 
 logger = get_logger(__name__)
 
@@ -65,12 +67,14 @@ def collect_inventory(config: Dict[str, Any], plugins: Any) -> List[Dict[str, An
                     plugin = plugins[plugin_name].plugin
                     client = get_boto3_client(plugin_name, credentials, region)
                     resources = plugin(client)
-                    inventory.append({
-                        "account": account["account_id"],
-                        "region": region,
-                        "service": plugin_name,
-                        "resources": resources,
-                    })
+                    inventory.append(
+                        {
+                            "account": account["account_id"],
+                            "region": region,
+                            "service": plugin_name,
+                            "resources": resources,
+                        }
+                    )
                 except Exception as e:
                     logger.error(f"Error querying {plugin_name} in {region} for account {account['account_id']}: {e}")
     return inventory

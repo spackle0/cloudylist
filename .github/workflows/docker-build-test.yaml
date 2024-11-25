@@ -59,7 +59,7 @@ jobs:
             --entrypoint "" \
             ghcr.io/${{ github.repository }}/cloudylist-test:latest \
             sh -c "poetry run pytest --tb=short --cov=cloudylist --cov-report=html tests"
-          tar -czf coverage-html.tar.gz htmlcov
+          tar -czf coverage-html.tar.gz coverage_html_report
 
       - name: Upload coverage report
         if: success()

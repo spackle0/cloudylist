@@ -9,6 +9,7 @@ from stevedore import ExtensionManager
 app = typer.Typer()
 console = Console()
 
+
 def output_table(data):
     table = Table(title="AWS Multi-Account Inventory")
     table.add_column("Account", style="cyan", justify="left")
@@ -20,12 +21,15 @@ def output_table(data):
         table.add_row(item["account"], item["region"], item["service"], resources_summary)
     console.print(table)
 
+
 def output_json(data):
     console.print_json(data=json.dumps(data, indent=4))
+
 
 def output_yaml(data):
     yaml_output = yaml.dump(data, default_flow_style=False, sort_keys=False)
     console.print(yaml_output)
+
 
 @app.command()
 def show_inventory(
