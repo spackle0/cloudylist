@@ -110,3 +110,16 @@ def test_collect_inventory_success():
     assert inventory[0]["region"] == "us-east-1"
     assert inventory[0]["service"] == "ec2"
     assert inventory[0]["resources"] == [{"id": "resource-1"}]
+
+def test_assume_role_exception(mocker):
+    """Test exception handling in assume_role."""
+    mocker.patch("cloudylist.utils.boto3.client", side_effect=Exception("Simulated error"))
+    config = {
+        "accounts": [{"account_id": "123456789012", "role_name": "TestRole"}],
+        "regions": ["us-east-1"],
+    }
+    plugins = mocker.Mock(names=lambda: ["ec2"])
+
+    inventory = collect_inventory(config, plugins)
+
+    assert inventory == []  # No inventory should be collected
