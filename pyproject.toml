@@ -5,7 +5,7 @@ description = "AWS Inventory List"
 authors = ["spackle0 <spackle0@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
-package-mode = false
+packages = [{include = "cloudylist"}]
 
 [tool.pylint.basic]
 dostring-min-length=10
@@ -42,7 +42,7 @@ message = "Version updated from {current_version} to {new_version}"
 filename = "README.md"
 
 [[tool.bumpversion.files]]
-filename = "Makefile"
+filename = "Taskfile.yaml"
 
 [tool.ruff]
 show-fixes = true

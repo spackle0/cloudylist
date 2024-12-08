@@ -7,8 +7,16 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-# Install Poetry
-RUN pip install --no-cache-dir poetry
+# Need curl for poetry official installer
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install poetry using the official installer
+ENV POETRY_HOME=/opt/poetry
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry
 
 # Copy project dependency files
 COPY pyproject.toml poetry.lock ./

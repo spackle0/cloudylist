@@ -42,8 +42,6 @@ tasks:
     cmds:
       - docker run --rm cloudylist:test
 
-
-
   lint:
     desc: "Run linters"
     cmds:
